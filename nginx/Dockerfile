@@ -6,15 +6,14 @@ FROM debian:13
 # ENV NGINX_HOST=foobar.com \
 #     NGINX_PORT=80
 
-RUN apt-get -y update
-RUN apt-get -y install nginx
-RUN rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /home/app
+RUN apt-get -y update \
+    && apt-get -y install nginx \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /home/app
 
 EXPOSE 443 80
 COPY . /home/app
 
-# CMD ["nginx", "-g daemon off"]
 ENTRYPOINT ["nginx", "-g daemon off;"]
 
 
