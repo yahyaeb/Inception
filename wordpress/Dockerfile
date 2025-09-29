@@ -1,30 +1,24 @@
-FROM debian:13
+FROM debian:12
 
-ENV WORDPRESS_DB_HOST=db
-ENV WORDPRESS_DB_USER=yaya
-ENV WORDPRESS_DB_PASSWORD=123
-ENV WORDPRESS_DB_NAME=yaya_test
+# Base tools + PHP-FPM + required extensions
+RUN apt-get update && apt-get install -y \
+    ca-certificates curl tar unzip \
+    php-fpm php-mysql php-curl php-xml php-mbstring php-zip php-gd \
+ && rm -rf /var/lib/apt/lists/*
 
-#default port 9000:80
+# wp-cli (single phar)
+RUN curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp \
+ && chmod +x /usr/local/bin/wp
+
+# Use your pool config (optional; default works too)
+COPY fpm-www.conf /etc/php/8.2/fpm/pool.d/www.conf
+
+# Bootstrap script
+COPY script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
+
+WORKDIR /var/www/wordpress
 EXPOSE 9000
 
-
-RUN apt-get update && \
-    apt-get install php-fpm -y &&\
-    apt-get install -y php-mysql php-curl php-xml php-mbstring php-zip php-gd &&\
-    rm -rf /var/lib/apt/lists/*
-    
-# COPY www.conf /etc/php2/php-fpm/pool.d/.
-USER www-data
-CMD ["php-fpm", "-F"]
-
-# RUN mkdir -p /var/lib/mysql /run/mysqld && \
-#     chown -R mysql:mysql /var/lib/mysql /run/mysqld
-
-# #initialize database files
-# RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql
-# VOLUME [ "/var/lib/mysql" ]
-# USER mysql
-
-# ENTRYPOINT [ "mariadbd" ]
-# CMD ["--datadir=/var/lib/mysql", "--bind-address=0.0.0.0"]
+# Run php-fpm in foreground via the script (no loops/hacks)
+ENTRYPOINT ["/usr/local/bin/script.sh"]

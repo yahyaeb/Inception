@@ -1,32 +1,14 @@
-FROM debian:13
+FROM nginx:stable
 
-# ENV MONGO_DB_USERNAME=admin \
-#     MONGO_DB_PWD=password
+# Install openssl
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
-# ENV NGINX_HOST=foobar.com \
-#     NGINX_PORT=80
+# Copy custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN apt-get -y update \
-    && apt-get -y install nginx \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /home/app
+# Create directory for certs
+COPY ./ssl/certs.sh /usr/local/bin/certs.sh
+RUN chmod +x /usr/local/bin/certs.sh
 
-EXPOSE 443 80
-COPY . /home/app
+ENTRYPOINT ["/usr/local/bin/certs.sh"]
 
-ENTRYPOINT ["nginx", "-g daemon off;"]
-
-
-# FROM : stes the base image
-# RUN: Executes the shell commands during build time
-# CMD: Provides default command to run at container start
-# ENTRYPOINT: Defines a fixed command, often combined with CMD for args
-# COPY/ADD: Copies files into the images(ADD support URLS & and archives)
-# ENV: Sets environment variables
-# EXPOSE: Documents which ports the container will listen on
-# WORKDIR: Sets the working directory for following instructions
-# VOLUME: Declare mount points for persistent or shared data
-# ARG: Defines build-time variables, usuable during RUN
-
-#1 - docker build -t my-nginx:v1 .
-#2 - docker run -p 443:80 -d my-nginx:v1

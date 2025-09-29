@@ -1,8 +1,5 @@
 FROM debian:13
 
-# ENV mariadb_USERNAME=admin \
-#     MARIADB_ROOT_PASSWORD=123
-
 #default port 3306
 EXPOSE 3306 
 
