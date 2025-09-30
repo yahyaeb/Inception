@@ -17,7 +17,7 @@ COPY fpm-www.conf /etc/php/8.2/fpm/pool.d/www.conf
 COPY script.sh /usr/local/bin/script.sh
 RUN chmod +x /usr/local/bin/script.sh
 
-WORKDIR /var/www/wordpress
+WORKDIR /home/yel-bouk/data
 EXPOSE 9000
 
 # Run php-fpm in foreground via the script (no loops/hacks)

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DOCROOT="/var/www/wordpress"    # <-- align with nginx root
+DOCROOT="/home/yel-bouk/data"    # <-- align with nginx root
 mkdir -p "$DOCROOT"
 cd "$DOCROOT"
 

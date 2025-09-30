@@ -3,10 +3,10 @@ services:
     image: mariadb:11
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wpuser
-      MYSQL_PASSWORD: wppass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     networks: [wpnet]
@@ -14,22 +14,22 @@ services:
   wordpress-fpm:
     build: ./wordpress          # <— your Dockerfile here (php:8.2-fpm base)
     image: my-wp-fpm:v1         # optional tag you control
-    working_dir: /var/www/wordpress
+    working_dir: /home/yel-bouk/data
     volumes:
-      - wp_data:/var/www/wordpress
+      - wp_data:/home/yel-bouk/data
     environment:
-      database_name: wordpress
-      mysql_user: wpuser
-      mysql_password: wppass
-      mysql_host: mariadb
-      domain_name: https://yel-bouk.42.fr
-      brand: "My WP"
-      wordpress_admin: siteowner          # do NOT contain “admin”
-      wordpress_admin_password: adminpass123
-      wordpress_admin_email: admin@example.local
-      login: author1
-      wp_user_email: author1@example.local
-      wp_user_pwd: authorpass123
+      database_name: ${DATABASE_NAME}
+      mysql_user: ${MYSQL_USER}
+      mysql_password: ${MYSQL_PASSWORD}
+      mysql_host: ${MYSQL_HOST}
+      domain_name: ${DOMAIN_NAME}
+      brand: ${BRAND}
+      wordpress_admin: ${WORDPRESS_ADMIN}
+      wordpress_admin_password: ${WORDPRESS_ADMIN_PASSWORD}
+      wordpress_admin_email: ${WORDPRESS_ADMIN_EMAIL}
+      login: ${LOGIN}
+      wp_user_email: ${WP_USER_EMAIL}
+      wp_user_pwd: 
     expose:
       - "9000"
     depends_on: [mariadb]
@@ -45,7 +45,7 @@ services:
     environment:
       NGINX_DOMAIN: yel-bouk.42.fr
     volumes:
-      - wp_data:/var/www/wordpress:ro       # matches nginx.conf root
+      - wp_data:/home/yel-bouk/data:ro       # matches nginx.conf root
       - nginx_certs:/etc/nginx/ssl
     depends_on: [wordpress-fpm]
     networks: [wpnet]
@@ -53,7 +53,11 @@ services:
 volumes:
   db_data:
   wp_data:
-  nginx_certs:
+  nginx_certxs:
 
 networks:
   wpnet:
+
+#sudo usermod -aG docker $USER
+#newgrp docker
+#
