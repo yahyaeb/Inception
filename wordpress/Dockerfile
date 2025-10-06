@@ -4,6 +4,7 @@ FROM debian:12
 RUN apt-get update && apt-get install -y \
     ca-certificates curl tar unzip \
     php-fpm php-mysql php-curl php-xml php-mbstring php-zip php-gd \
+    mariadb-client \
  && rm -rf /var/lib/apt/lists/*
 
 # wp-cli (single phar)
@@ -17,7 +18,7 @@ COPY fpm-www.conf /etc/php/8.2/fpm/pool.d/www.conf
 COPY script.sh /usr/local/bin/script.sh
 RUN chmod +x /usr/local/bin/script.sh
 
-WORKDIR /home/yel-bouk/data
+WORKDIR /var/www/html
 EXPOSE 9000
 
 # Run php-fpm in foreground via the script (no loops/hacks)

@@ -3,7 +3,11 @@ services:
     build: ./mariadb
     image: my-mariadb:v1
     restart: always
-    env_file: [.env]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     networks: [wpnet]
@@ -30,7 +34,7 @@ services:
         condition: service_healthy
     networks: [wpnet]
     healthcheck:
-      test: ["CMD", "sh", "-c", "nc -z 127.0.0.1 9000 || exit 1"]
+      test: ["CMD", "php", "-r", "echo fsockopen('127.0.0.1', 9000) ? 'OK' : 'FAIL';"]
       interval: 5s
       timeout: 3s
       retries: 20
