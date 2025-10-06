@@ -1,63 +1,61 @@
 services:
   mariadb:
-    image: mariadb:11
+    build: ./mariadb
+    image: my-mariadb:v1
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    env_file: [.env]
     volumes:
       - db_data:/var/lib/mysql
     networks: [wpnet]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "--protocol=SOCKET", "--socket=/run/mysqld/mysqld.sock", "ping", "--silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
 
   wordpress-fpm:
-    build: ./wordpress          # <— your Dockerfile here (php:8.2-fpm base)
-    image: my-wp-fpm:v1         # optional tag you control
-    working_dir: /home/yel-bouk/data
-    volumes:
-      - wp_data:/home/yel-bouk/data
+    build: ./wordpress
+    image: my-wp-fpm:v1
+    env_file: [.env]                 # keep your MYSQL_* here
     environment:
-      database_name: ${DATABASE_NAME}
-      mysql_user: ${MYSQL_USER}
-      mysql_password: ${MYSQL_PASSWORD}
-      mysql_host: ${MYSQL_HOST}
-      domain_name: ${DOMAIN_NAME}
-      brand: ${BRAND}
-      wordpress_admin: ${WORDPRESS_ADMIN}
-      wordpress_admin_password: ${WORDPRESS_ADMIN_PASSWORD}
-      wordpress_admin_email: ${WORDPRESS_ADMIN_EMAIL}
-      login: ${LOGIN}
-      wp_user_email: ${WP_USER_EMAIL}
-      wp_user_pwd: 
+      DB_HOST: mariadb               # <- ADD this
+      WORDPRESS_DB_HOST: mariadb     # <- (optional safety)
+    volumes:
+      - wp_data:/var/www/html        # <- ensure this EXACT path
     expose:
       - "9000"
-    depends_on: [mariadb]
+    depends_on:
+      mariadb:
+        condition: service_healthy
     networks: [wpnet]
+    healthcheck:
+      test: ["CMD", "sh", "-c", "nc -z 127.0.0.1 9000 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 
   nginx:
     build: ./nginx
-    image: nginx
+    image: my-nginx:v1                 # <<< avoid pulling official nginx
     restart: always
     ports:
-      - "443:443"                           # ← only 443
+      - "443:443"
     environment:
       NGINX_DOMAIN: yel-bouk.42.fr
     volumes:
-      - wp_data:/home/yel-bouk/data:ro       # matches nginx.conf root
+      - wp_data:/var/www/html:ro       # <<< same path as FPM
       - nginx_certs:/etc/nginx/ssl
-    depends_on: [wordpress-fpm]
+    depends_on:
+      wordpress-fpm:
+        condition: service_healthy
     networks: [wpnet]
 
 volumes:
   db_data:
   wp_data:
-  nginx_certxs:
+  nginx_certs:
 
 networks:
   wpnet:
-
-#sudo usermod -aG docker $USER
-#newgrp docker
-#

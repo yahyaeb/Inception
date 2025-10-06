@@ -1,20 +1,19 @@
 FROM debian:13
 
-#default port 3306
-EXPOSE 3306 
+EXPOSE 3306
 
+# install server + gosu (to drop privileges at the end)
+RUN apt-get update \
+ && apt-get install -y mariadb-server gosu \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get install -y mariadb-server && \
-    rm -rf /var/lib/apt/lists/*
+# copy our tiny entrypoint and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-RUN mkdir -p /var/lib/mysql /run/mysqld && \
-    chown -R mysql:mysql /var/lib/mysql /run/mysqld
+# persist data
+VOLUME ["/var/lib/mysql"]
 
-#initialize database files
-RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql
-VOLUME [ "/var/lib/mysql" ]
-USER mysql
-
-ENTRYPOINT [ "mariadbd" ]
-CMD ["--datadir=/var/lib/mysql", "--bind-address=0.0.0.0"]
+# IMPORTANT: run as root so we can initialize, then we exec as mysql in the script
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["mariadbd","--datadir=/var/lib/mysql","--bind-address=0.0.0.0"]
