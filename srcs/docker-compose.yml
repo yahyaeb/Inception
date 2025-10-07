@@ -2,7 +2,6 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
-    # image: my-mariadb:v1
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
