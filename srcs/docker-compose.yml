@@ -1,7 +1,8 @@
 services:
   mariadb:
-    build: ./mariadb
-    image: my-mariadb:v1
+    container_name: mariadb
+    build: ./requirements/mariadb
+    # image: my-mariadb:v1
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -17,16 +18,15 @@ services:
       timeout: 3s
       retries: 20
 
-
   wordpress-fpm:
-    build: ./wordpress
-    image: my-wp-fpm:v1
-    env_file: [.env]                 # keep your MYSQL_* here
+    container_name: wordpress
+    build: ./requirements/wordpress
+    env_file: [.env]
     environment:
-      DB_HOST: mariadb               # <- ADD this
-      WORDPRESS_DB_HOST: mariadb     # <- (optional safety)
+      DB_HOST: mariadb
+      WORDPRESS_DB_HOST: mariadb
     volumes:
-      - wp_data:/var/www/html        # <- ensure this EXACT path
+      - wp_data:/var/www/html
     expose:
       - "9000"
     depends_on:
@@ -39,27 +39,41 @@ services:
       timeout: 3s
       retries: 20
 
-
   nginx:
-    build: ./nginx
-    image: my-nginx:v1                 # <<< avoid pulling official nginx
+    container_name: nginx
+    build: ./requirements/nginx
     restart: always
     ports:
       - "443:443"
     environment:
       NGINX_DOMAIN: yel-bouk.42.fr
     volumes:
-      - wp_data:/var/www/html:ro       # <<< same path as FPM
+      - wp_data:/var/www/html:ro
       - nginx_certs:/etc/nginx/ssl
     depends_on:
       wordpress-fpm:
         condition: service_healthy
     networks: [wpnet]
 
-volumes:
-  db_data:
-  wp_data:
-  nginx_certs:
-
 networks:
   wpnet:
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lepokile/data/mariadb
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lepokile/data/wordpress
+  nginx_certs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/lepokile/data/nginx

@@ -1,12 +1,12 @@
-FROM debian:13
+FROM debian:12.6
 
 EXPOSE 3306
 
-# server + client + gosu
+# server + client
 RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      mariadb-server mariadb-client gosu \
+ && apt-get install -y --no-install-recommends mariadb-server mariadb-client \
  && rm -rf /var/lib/apt/lists/*
+
 
 # sane defaults
 RUN printf "[mysqld]\nbind-address=0.0.0.0\nskip-name-resolve\nport=3306\n" \

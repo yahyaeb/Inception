@@ -5,7 +5,7 @@ DOCROOT="/var/www/html"
 mkdir -p "$DOCROOT"
 cd "$DOCROOT"
 
-# Wait for database to be ready with retry logic
+# Waiting for database to be ready
 echo "Waiting for database to be ready..."
 for i in $(seq 1 30); do
   if mysql -h"${MYSQL_HOST:-mariadb}" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SELECT 1;" 2>/dev/null; then
@@ -30,7 +30,7 @@ if [ ! -f wp-config.php ]; then
     --allow-root --skip-check
 fi
 
-# Wait for database to be ready before installing WordPress
+# Waiting for database to be ready before installing WordPress
 echo "Checking if WordPress is installed..."
 for i in $(seq 1 10); do
   if wp core is-installed --allow-root 2>/dev/null; then
