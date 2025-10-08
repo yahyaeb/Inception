@@ -46,20 +46,27 @@ This project deploys a WordPress website running on Nginx with a MariaDB databas
 ```
 .
 ├── Makefile
-├── srcs/
-│   ├── docker-compose.yml
-│   ├── requirements/
-│   │   ├── nginx/
-│   │   │   ├── Dockerfile
-│   │   │   └── conf/
-│   │   ├── wordpress/
-│   │   │   ├── Dockerfile
-│   │   │   └── tools/
-│   │   └── mariadb/
-│   │       ├── Dockerfile
-│   │       └── tools/
-│   └── .env
-└── README.md
+├── .gitignore
+├── README.md
+└── srcs/
+    ├── .env
+    ├── docker-compose.yml
+    ├── images/
+    │   └── Docker_logo.png
+    └── requirements/
+        ├── mariadb/
+        │   ├── Dockerfile
+        │   └── docker-entrypoint.sh
+        ├── nginx/
+        │   ├── Dockerfile
+        │   ├── nginx.conf
+        │   └── ssl/
+        │       └── certs.sh
+        └── wordpress/
+            ├── Dockerfile
+            ├── fpm-www.conf
+            └── script.sh
+
 
 ```
 
