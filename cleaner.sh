@@ -2,7 +2,7 @@
 # use with caution. this will clear all images, containers, volumes, and networks.
 set -e
 
-echo "⚠️  WARNING: This script is DANGEROUS."
+echo "!!--!! WARNING: This script is DANGEROUS. !!---!!"
 echo "It will delete ALL Docker containers, images, volumes, and networks on your system."
 echo
 read -p "Are you sure you want to proceed? (yes/[no]): " confirm
@@ -12,7 +12,7 @@ if [[ "$confirm" != "yes" ]]; then
   exit 0
 fi
 
-echo "🧹 Stopping and removing all containers, images, volumes, and networks..."
+echo "Stopping and removing all containers, images, volumes, and networks..."
 
 sudo docker ps -qa | xargs -r sudo docker stop
 sudo docker ps -qa | xargs -r sudo docker rm
