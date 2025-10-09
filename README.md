@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./srcs/images/Docker_logo.png" alt="Inception Project Architecture" width="200"/>
+  <img src="https://i.imgur.com/uCArO28.png" alt="Inception Project Architecture" width="300"/>
 </p>
 
 # Inception
