@@ -46,7 +46,6 @@ This project deploys a WordPress website running on Nginx with a MariaDB databas
 ```
 .
 ├── Makefile
-├── setup.sh
 ├── cleaner.sh
 ├── .gitignore
 ├── README.md
@@ -56,6 +55,8 @@ This project deploys a WordPress website running on Nginx with a MariaDB databas
     ├── images/
     │   └── Docker_logo.png
     └── requirements/
+        ├── Tools
+        │   └── setup.sh
         ├── mariadb/
         │   ├── Dockerfile
         │   └── docker-entrypoint.sh

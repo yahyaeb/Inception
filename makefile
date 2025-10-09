@@ -1,6 +1,6 @@
 up:
 	sudo mkdir -p ./data/{mariadb,wordpress,nginx}
-	@./setup.sh
+	@./srcs/requirements/tools/setup.sh
 	docker compose -f ./srcs/docker-compose.yml up -d --build
 
 down:
