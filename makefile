@@ -1,6 +1,6 @@
 up:
+	@./setup.sh
 	docker compose -f ./srcs/docker-compose.yml up -d --build
-
 down:
 	docker compose -f ./srcs/docker-compose.yml down
 
@@ -12,3 +12,5 @@ restart:
 
 .PHONY: up down clean logs restart
 .DEFAULT_GOAL := up
+
+
