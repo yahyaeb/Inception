@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql
+      - ${DATA_DIR:-./data}/mariadb:/var/lib/mysql
     networks: [wpnet]
     healthcheck:
       test: ["CMD", "mysqladmin", "--protocol=SOCKET", "--socket=/run/mysqld/mysqld.sock", "ping", "--silent"]
@@ -25,7 +25,7 @@ services:
       DB_HOST: mariadb
       WORDPRESS_DB_HOST: mariadb
     volumes:
-      - wp_data:/var/www/html
+      - ${DATA_DIR:-./data}/wordpress:/var/www/html
     expose:
       - "9000"
     depends_on:
@@ -48,8 +48,8 @@ services:
     environment:
       NGINX_DOMAIN: yel-bouk.42.fr
     volumes:
-      - wp_data:/var/www/html:ro
-      - nginx_certs:/etc/nginx/ssl
+      - ${DATA_DIR:-./data}/wordpress:/var/www/html:ro
+      - ${DATA_DIR:-./data}/nginx:/etc/nginx/ssl
     depends_on:
       wordpress-fpm:
         condition: service_healthy
@@ -57,23 +57,3 @@ services:
 
 networks:
   wpnet:
-
-volumes:
-  db_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/lepokile/data/mariadb
-  wp_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/lepokile/data/wordpress
-  nginx_certs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/lepokile/data/nginx
