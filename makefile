@@ -7,7 +7,7 @@ down:
 	docker compose -f ./srcs/docker-compose.yml down
 
 clean:
-	rm -rf ./srcs/data
+	rm -rf ./data
 	docker compose -f ./srcs/docker-compose.yml down -v
 
 restart:
