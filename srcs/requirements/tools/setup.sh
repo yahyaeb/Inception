@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-DOMAIN="cloud1.yahiaelboukili42.com"
+DOMAIN="cloud1.yahia-cloudonline.xyz"
 HOSTS_LINE="127.0.0.1 $DOMAIN"
 DATA_DIR="${DATA_DIR:-$HOME/data}"
 
