@@ -38,7 +38,7 @@ This project deploys a WordPress website running on Nginx with a MariaDB databas
 
 ## Usage
 
-- Access WordPress at `https://localhost` or `https://cloud1.yahiaelboukili42.com.fr`
+- Access WordPress at `https://localhost` or `https://cloud1.yahiaelboukili42.com`
 - Environment variables (database credentials, hostnames, etc.) are stored in the .env file and automatically loaded during build time.
 
 ## Project Structure

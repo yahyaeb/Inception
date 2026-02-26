@@ -46,7 +46,7 @@ services:
     ports:
       - "443:443"
     environment:
-      NGINX_DOMAIN: cloud1.yahiaelboukili42.com.fr
+      NGINX_DOMAIN: cloud1.yahiaelboukili42.com
     volumes:
       - ${DATA_DIR:-./data}/wordpress:/var/www/html:ro
       - ${DATA_DIR:-./data}/nginx:/etc/nginx/ssl
