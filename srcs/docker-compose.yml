@@ -55,5 +55,18 @@ services:
         condition: service_healthy
     networks: [wpnet]
 
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks: [wpnet]
+
 networks:
   wpnet:
